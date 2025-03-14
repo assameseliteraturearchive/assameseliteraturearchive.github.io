@@ -497,6 +497,96 @@
                 flex-direction: column;
             }
         }
+
+        /* Hamburger Menu CSS */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Mobile View Adjustments */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: white;
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border-radius: 0 0 8px 8px;
+                transform: translateY(-20px);
+                opacity: 0;
+                pointer-events: none;
+                z-index: 10;
+                border-top: 3px solid var(--highlight);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            .nav-links li {
+                margin-left: 0;
+                margin-bottom: 0.8rem;
+                padding-bottom: 0.8rem;
+                border-bottom: 1px solid var(--accent-color);
+                width: 100%;
+            }
+
+            .nav-links li:last-child {
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+
+            /* Hamburger menu animation when open */
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
+
+        /* JavaScript for Hamburger Menu */
     </style>
 </head>
 
@@ -594,10 +684,10 @@
 
                 // Fetch the list of works from the JSON file
                 // This file would contain all work metadata
-                fetch(`/data/`+aid+`_a/works.json`)
+                fetch(`/data/` + aid + `_a/works.json`)
                     .then(response => response.json())
                     .then(worksDatabase => {
-                        const workData = worksDatabase[workId-1];
+                        const workData = worksDatabase[workId - 1];
 
                         if (workData) {
                             // Update breadcrumb
@@ -897,7 +987,7 @@
                 }
 
                 // Fetch the list of works from the works.json file
-                fetch(`/data/`+aid+`_a/works.json`)
+                fetch(`/data/` + aid + `_a/works.json`)
                     .then(response => response.json())
                     .then(worksDatabase => {
                         const relatedWorksContainer = document.getElementById('related-works-list');
@@ -999,6 +1089,40 @@
                 });
             }
         }
+
+        const nav = document.querySelector('nav');
+        const hamburger = document.createElement('div');
+        hamburger.className = 'hamburger';
+        hamburger.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+        nav.appendChild(hamburger);
+
+        const navLinks = document.querySelector('.nav-links');
+
+        // Toggle menu on hamburger click
+        hamburger.addEventListener('click', function () {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!nav.contains(event.target)) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        // Close menu when window is resized to desktop size
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
