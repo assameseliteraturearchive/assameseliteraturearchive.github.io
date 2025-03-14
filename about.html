@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="as">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমাৰ বিষয়ে - অসমীয়া সাহিত্য সংগ্ৰহালয়</title>
+    <style>
+        :root {
+            --primary-color: #5D4037;
+            --secondary-color: #8D6E63;
+            --accent-color: #D7CCC8;
+            --text-color: #3E2723;
+            --light-text: #f5f5f5;
+            --highlight: #FF9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #FBE9E7;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 3rem 0;
+            background-image: linear-gradient(rgba(93, 64, 55, 0.8), rgba(93, 64, 55, 0.9)), url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+            border-bottom: 5px solid var(--highlight);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight);
+        }
+
+        .page-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        .page-title::after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 3px;
+            background-color: var(--highlight);
+            margin: 0.5rem auto;
+        }
+
+        .about-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--highlight);
+        }
+
+        .about-content {
+            margin-top: 1.5rem;
+        }
+
+        .vision-mission {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .vision, .mission {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-section {
+            margin-top: 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .member-image {
+            height: 200px;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .member-info {
+            padding: 1.5rem;
+        }
+
+        .member-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-info p {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .milestone-section {
+            margin-top: 3rem;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--accent-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: var(--highlight);
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            top: 15px;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item:nth-child(odd)::after {
+            right: -17px;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -17px;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .partners-section {
+            margin-top: 3rem;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .partner-logo {
+            height: 120px;
+            background-color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin: 1rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--highlight);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--highlight);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--accent-color);
+        }
+
+        /* Hamburger Menu CSS */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile View Adjustments */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: white;
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border-radius: 0 0 8px 8px;
+                transform: translateY(-20px);
+                opacity: 0;
+                pointer-events: none;
+                z-index: 10;
+                border-top: 3px solid var(--highlight);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            .nav-links li {
+                margin-left: 0;
+                margin-bottom: 0.8rem;
+                padding-bottom: 0.8rem;
+                border-bottom: 1px solid var(--accent-color);
+                width: 100%;
+            }
+
+            .nav-links li:last-child {
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+
+            /* Hamburger menu animation when open */
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+
+            /* Timeline mobile adjustment */
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            .timeline-item:nth-child(odd)::after,
+            .timeline-item:nth-child(even)::after {
+                left: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>অসমীয়া সাহিত্য সংগ্ৰহালয়</h1>
+            <p>অসমৰ সমৃদ্ধ সাহিত্যিক ঐতিহ্য সংৰক্ষণ আৰু উদযাপন</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav>
+            <div class="logo"><a href="index.html">অসমীয়া সাহিত্য সংগ্ৰহালয়</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">মূল পৃষ্ঠা</a></li>
+                <li><a href="#">সংগ্ৰহ</a></li>
+                <li><a href="about.html">আমাৰ বিষয়ে</a></li>
+                <li><a href="contact.html">যোগাযোগ</a></li>
+            </ul>
+        </nav>
+
+        <h1 class="page-title">আমাৰ বিষয়ে</h1>
+
+        <div class="about-section">
+            <h2>আমাৰ কাহিনী</h2>
+            <div class="about-content">
+                <p>অসমীয়া সাহিত্য সংগ্ৰহালয় ২০১৫ চনত গুৱাহাটীত স্থাপন কৰা হৈছিল, অসমৰ সমৃদ্ধ সাহিত্যিক ঐতিহ্য সংৰক্ষণ আৰু উদযাপন কৰাৰ উদ্দেশ্যৰে। আমাৰ সংগ্ৰহালয়ে অসমীয়া সাহিত্যৰ ইতিহাস, ইয়াৰ প্ৰখ্যাত লেখক-লেখিকাসকল, আৰু তেওঁলোকৰ মূল্যৱান অৱদানক উদ্‌যাপন কৰে।</p>
+                <p style="margin-top: 1rem;">আমি বিশ্বাস কৰো যে সাহিত্য কেৱল শব্দতে সীমাবদ্ধ নহয়, ই সংস্কৃতি, ইতিহাস, আৰু মানৱীয় অভিজ্ঞতাৰ এক সামগ্ৰিক প্ৰতিফলন। আমাৰ সংগ্ৰহালয়ত অসমীয়া সাহিত্যৰ বিভিন্ন দিশৰ প্ৰদৰ্শন আছে, প্ৰাচীন পুথিৰ পৰা আধুনিক সাহিত্যলৈ, লোক সাহিত্যৰ পৰা সমসাময়িক সৃষ্টিলৈকে।</p>
+                <p style="margin-top: 1rem;">বছৰৰ পিছত বছৰ ধৰি, আমাৰ সংগ্ৰহালয়ে অসমীয়া সাহিত্যক ৰাষ্ট্ৰীয় আৰু আন্তঃৰাষ্ট্ৰীয় পৰ্যায়ত প্ৰচাৰ কৰাৰ বাবে কাম কৰি আহিছে, যাতে অসমীয়া সাহিত্যৰ বিশাল বিশ্ব সকলোৰে বাবে সুলভ হয়।</p>
+            </div>
+        </div>
+
+        <div class="vision-mission">
+            <div class="vision">
+                <h2>আমাৰ দৃষ্টিভংগী</h2>
+                <div class="about-content">
+                    <p>অসমীয়া সাহিত্যক বিশ্বজুৰি প্ৰচাৰ কৰি ইয়াৰ সমৃদ্ধ ঐতিহ্যৰ মূল্য আৰু প্ৰাসংগিকতা বৃদ্ধি কৰা।</p>
+                    <p style="margin-top: 1rem;">আমি এটা এনে বিশ্ব কল্পনা কৰোঁ য'ত অসমীয়া সাহিত্যক বিশ্বজুৰি সন্মান কৰা হয়, অধ্যয়ন কৰা হয়, আৰু উপভোগ কৰা হয়, ইয়াৰ অনন্য সাংস্কৃতিক আৰু ঐতিহাসিক মূল্যৰ বাবে।</p>
+                </div>
+            </div>
+            <div class="mission">
+                <h2>আমাৰ লক্ষ্য</h2>
+                <div class="about-content">
+                    <ul style="padding-left: 1.5rem;">
+                        <li>অসমীয়া সাহিত্যৰ সংৰক্ষণ আৰু সংৰক্ষণ কৰা, ভৱিষ্যতৰ প্ৰজন্মৰ বাবে ইয়াৰ ঐতিহ্য সুৰক্ষিত কৰা।</li>
+                        <li>বিভিন্ন প্ৰদৰ্শনী, কৰ্মশালা, আৰু কাৰ্যক্ৰমৰ জৰিয়তে অসমীয়া সাহিত্য আৰু ভাষাৰ প্ৰচাৰ কৰা।</li>
+                        <li>অসমীয়া সাহিত্যত অনুসন্ধান আৰু অধ্যয়নৰ বাবে গৱেষক আৰু ছাত্ৰ-ছাত্ৰীসকলক সমৰ্থন কৰা।</li>
+                        <li>অসমীয়া সাহিত্যক ডিজিটেল কৰি ইয়াক বিশ্বজুৰি অধিক সুলভ কৰা।</li>
+                        <li>নতুন লেখক-লেখিকাসকলক প্ৰেৰণা দি অসমীয়া সাহিত্যৰ ভৱিষ্যতক সমৃদ্ধ কৰা।</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-section about-section">
+            <h2>আমাৰ দল</h2>
+            <p>আমাৰ সংগ্ৰহালয় চলোৱাত সহায় কৰা অভিজ্ঞ আৰু উৎসৰ্গিত ব্যক্তিসকলৰ লগত পৰিচয় কৰাওক:</p>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">👨‍💼</div>
+                    <div class="member-info">
+                        <h3>ড৹ হেমন্ত শৰ্মা</h3>
+                        <p>সঞ্চালক</p>
+                        <p>ড৹ শৰ্মা এজন বিশিষ্ট অসমীয়া সাহিত্যৰ গৱেষক আৰু ২০১৫ চনৰ পৰা সংগ্ৰহালয়ৰ নেতৃত্বত আছে।</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">👩‍💼</div>
+                    <div class="member-info">
+                        <h3>ড৹ মিনাক্ষী বৰা</h3>
+                        <p>কিউৰেটৰ</p>
+                        <p>ড৹ বৰাই আমাৰ সংগ্ৰহ আৰু প্ৰদৰ্শনীসমূহৰ তত্ত্বাৱধান কৰে, ইয়াৰ উপস্থাপন আৰু সংৰক্ষণ নিশ্চিত কৰি।</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">👨‍🎓</div>
+                    <div class="member-info">
+                        <h3>ৰীমা গগৈ</h3>
+                        <p>শিক্ষা কোঅৰ্ডিনেটৰ</p>
+                        <p>ৰীমাই আমাৰ শিক্ষামূলক কাৰ্যক্ৰম পৰিচালনা কৰে, স্কুল আৰু কলেজৰ ভ্ৰমণৰ পৰা সাহিত্যিক কৰ্মশালালৈকে।</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">👨‍💻</div>
+                    <div class="member-info">
+                        <h3>অভিজিৎ ডেকা</h3>
+                        <p>ডিজিটেল আৰ্কাইভিষ্ট</p>
+                        <p>অভিজিতে আমাৰ ডিজিটেল সংগ্ৰহ আৰু অনলাইন উপস্থিতি পৰিচালনা কৰে, সাহিত্যক ডিজিটেলভাৱে সংৰক্ষণ কৰি।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="milestone-section about-section">
+            <h2>আমাৰ মাইলৰ খুঁটা</h2>
+            <p>অসমীয়া সাহিত্য সংগ্ৰহালয়ৰ যাত্ৰাত গুৰুত্বপূৰ্ণ মুহূৰ্তসমূহ:</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০১৫</div>
+                        <p>গুৱাহাটীত অসমীয়া সাহিত্য সংগ্ৰহালয়ৰ প্ৰতিষ্ঠা।</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০১৭</div>
+                        <p>দুৰ্লভ অসমীয়া পাণ্ডুলিপিৰ ডিজিটেল আৰ্কাইভ প্ৰকল্প আৰম্ভ কৰা হৈছিল।</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০১৯</div>
+                        <p>১০,০০০ ৰো অধিক অসমীয়া গ্ৰন্থৰ সংগ্ৰহৰ সৈতে সংগ্ৰহালয়ৰ লাইব্ৰেৰী বিস্তাৰৰ সমাপ্তি।</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০২১</div>
+                        <p>অসমীয়া সাহিত্যৰ আন্তঃৰাষ্ট্ৰীয় সন্মিলনৰ যশস্বী আয়োজন।</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০২৩</div>
+                        <p>অসমীয়া সাহিত্য উত্সৱ আৰম্ভ কৰা হৈছিল, যি এতিয়া এক বাৰ্ষিক আয়োজন হৈ পৰিছে।</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">২০২৪</div>
+                        <p>ঐতিহাসিক অসমীয়া পাণ্ডুলিপিৰ সংৰক্ষণৰ বাবে ৰাষ্ট্ৰীয় পুৰস্কাৰ লাভ কৰিছে।</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="partners-section about-section">
+            <h2>আমাৰ সহযোগী</h2>
+            <p>আমাৰ সফলতা আমাৰ মূল্যৱান সহযোগীসকলৰ সমৰ্থন অবিহনে সম্ভৱ নহ'লহেঁতেন:</p>
+
+            <div class="partners-grid">
+                <div class="partner-logo">অসম সাহিত্য সভা</div>
+                <div class="partner-logo">সাহিত্য অকাদেমী</div>
+                <div class="partner-logo">অসম বিশ্ববিদ্যালয়</div>
+                <div class="partner-logo">আই.সি.সি.আৰ</div>
+                <div class="partner-logo">ৰাষ্ট্ৰীয় অভিলেখাগাৰ</div>
+                <div class="partner-logo">অসম চৰকাৰ</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>আমাৰ বিষয়ে</h3>
+                    <p>অসমীয়া সাহিত্য সংগ্ৰহালয় অসমৰ সমৃদ্ধ সাহিত্যিক ঐতিহ্য সংগ্ৰহ, সংৰক্ষণ আৰু প্ৰচাৰ কৰাৰ বাবে
+                        উৎসৰ্গিত। আমাৰ লক্ষ্য হৈছে অসমীয়া সাহিত্য বিশ্বজুৰি পাঠকৰ বাবে সুলভ কৰা।</p>
+                </div>
+                <div class="footer-section">
+                    <h3>দ্ৰুত লিংক</h3>
+                    <ul>
+                        <li><a href="index.html">মূল পৃষ্ঠা</a></li>
+                        <li><a href="about.html">আমাৰ বিষয়ে</a></li>
+                        <li><a href="#">সংগ্ৰহ</a></li>
+                        <li><a href="contact.html">যোগাযোগ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>যোগাযোগ</h3>
+                    <p>অসমীয়া সাহিত্য সংগ্ৰহালয়</p>
+                    <p>৩২১ এম.জি. ৰোড, গুৱাহাটী - ৭৮১০০১</p>
+                    <p>অসম, ভাৰত</p>
+                    <p>ফোন: +91 1234567890</p>
+                    <p>ইমেইল: info@asamiyasahitya.org</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; ২০২৫ অসমীয়া সাহিত্য সংগ্ৰহালয়। সৰ্বস্বত্ব সংৰক্ষিত।</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu functionality
+        const nav = document.querySelector('nav');
+            const hamburger = document.createElement('div');
+            hamburger.className = 'hamburger';
+            hamburger.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+            nav.appendChild(hamburger);
+
+            const navLinks = document.querySelector('.nav-links');
+
+            // Toggle menu on hamburger click
+            hamburger.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!nav.contains(event.target)) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            });
+
+            // Close menu when window is resized to desktop size
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            });
+    </script>
+</body>
+</html>

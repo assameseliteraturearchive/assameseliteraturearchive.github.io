@@ -329,7 +329,7 @@
             color: var(--primary-color);
         }
 
-        
+
         .nav-links {
             display: flex;
             list-style: none;
@@ -533,8 +533,79 @@
             );
         }
 
+        // Function to create and display a popup notification
+        function showSiteNotification() {
+            // Create the main popup container
+            const popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.bottom = '20px';
+            popup.style.right = '20px';
+            popup.style.maxWidth = '400px';
+            popup.style.backgroundColor = 'white';
+            popup.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+            popup.style.borderRadius = '8px';
+            popup.style.padding = '16px';
+            popup.style.zIndex = '1000';
+            popup.style.border = '2px solid #5D4037';
+
+            // Create popup content
+            const content = document.createElement('div');
+
+            // Add heading
+            const heading = document.createElement('h3');
+            heading.textContent = 'Site Information';
+            heading.style.color = '#5D4037';
+            heading.style.marginTop = '0';
+            heading.style.marginBottom = '10px';
+            heading.style.borderBottom = '2px solid #FF9800';
+            heading.style.paddingBottom = '5px';
+
+            // Add message
+            const message = document.createElement('p');
+            message.innerHTML = '<strong>Note:</strong> This website is currently under development, and the data presented may not be accurate.';
+            message.style.marginBottom = '12px';
+
+            // Add contact information
+            const contact = document.createElement('p');
+            contact.innerHTML = 'Please contact <a href="mailto:ritulahkar92@gmail.com" style="color: #5D4037; text-decoration: underline;">ritulahkar92@gmail.com</a> for more info';
+            contact.style.marginBottom = '12px';
+
+            // Add close button
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Close';
+            closeButton.style.backgroundColor = '#5D4037';
+            closeButton.style.color = 'white';
+            closeButton.style.border = 'none';
+            closeButton.style.padding = '8px 16px';
+            closeButton.style.borderRadius = '4px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.float = 'right';
+
+            // Add event listener to close button
+            closeButton.addEventListener('click', function () {
+                document.body.removeChild(popup);
+                // Save to localStorage to prevent showing again in the same session
+                localStorage.setItem('popupShown', 'true');
+            });
+
+            // Assemble the popup
+            content.appendChild(heading);
+            content.appendChild(message);
+            content.appendChild(contact);
+            content.appendChild(closeButton);
+            popup.appendChild(content);
+
+            // Add to the document
+            document.body.appendChild(popup);
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async () => {
+            setTimeout(function () {
+                if (!localStorage.getItem('popupShown')) {
+                    showSiteNotification();
+                }
+            }, 1500); // Show popup after 1.5 seconds
             const nav = document.querySelector('nav');
             const hamburger = document.createElement('div');
             hamburger.className = 'hamburger';
