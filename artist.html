@@ -367,6 +367,11 @@
             border-top: 1px solid var(--accent-color);
         }
 
+        .alphabet-letter.inactive {
+            opacity: 0.3;
+            cursor: default;
+        }
+
         @media (max-width: 768px) {
             .artist-profile {
                 flex-direction: column;
@@ -584,32 +589,82 @@
         }
 
         // Function to render alphabet filter
-        function renderAlphabetFilter() {
+        function renderAlphabetFilter(artistId) {
             const alphabetContainer = document.getElementById('alphabet-container');
             if (!alphabetContainer) return;
 
             alphabetContainer.innerHTML = '';
 
-            assameseAlphabet.forEach(letter => {
-                const letterElement = document.createElement('div');
-                letterElement.className = 'alphabet-letter';
-                letterElement.textContent = letter;
-                letterElement.addEventListener('click', () => {
-                    // Remove active class from all letters
-                    document.querySelectorAll('.alphabet-letter').forEach(el => {
-                        el.classList.remove('active');
+            // First fetch all works to determine which letters have content
+            const filePath = `data/${artistId}_a/works.json`;
+
+            // Show loader while fetching data
+            const alphabetLoader = document.getElementById('alphabet-loader') || document.createElement('div');
+            alphabetLoader.id = 'alphabet-loader';
+            alphabetLoader.className = 'loader';
+            alphabetContainer.appendChild(alphabetLoader);
+
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(worksData => {
+                    // Create a set of first letters that have works
+                    const activeLetters = new Set();
+                    worksData.forEach(work => {
+                        const firstChar = work.title.charAt(0);
+                        activeLetters.add(firstChar);
                     });
 
-                    // Add active class to clicked letter
-                    letterElement.classList.add('active');
+                    // Clear loader
+                    alphabetContainer.innerHTML = '';
 
-                    // Load works for the selected letter
-                    const artistId = getUrlParameter('id');
-                    loadWorksByLetter(artistId, letter);
+                    // Render alphabet with appropriate styling
+                    assameseAlphabet.forEach(letter => {
+                        const letterElement = document.createElement('div');
+                        letterElement.className = 'alphabet-letter';
+                        letterElement.textContent = letter;
+
+                        // Add 'inactive' class if no works start with this letter
+                        if (!activeLetters.has(letter)) {
+                            letterElement.classList.add('inactive');
+                        } else {
+                            // Only add click event to letters that have works
+                            letterElement.addEventListener('click', () => {
+                                // Remove active class from all letters
+                                document.querySelectorAll('.alphabet-letter').forEach(el => {
+                                    el.classList.remove('active');
+                                });
+
+                                // Add active class to clicked letter
+                                letterElement.classList.add('active');
+
+                                // Load works for the selected letter
+                                loadWorksByLetter(artistId, letter);
+                            });
+                        }
+
+                        alphabetContainer.appendChild(letterElement);
+                    });
+
+                    // Select the first active letter by default
+                    const firstActiveLetter = document.querySelector('.alphabet-letter:not(.inactive)');
+                    if (firstActiveLetter) {
+                        firstActiveLetter.classList.add('active');
+                        loadWorksByLetter(artistId, firstActiveLetter.textContent);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading works for alphabet filter:', error);
+                    alphabetContainer.innerHTML = `
+                <div class="error-message">
+                    বৰ্ণমালা লোড কৰিব পৰা নগ'ল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।
+                </div>
+            `;
                 });
-
-                alphabetContainer.appendChild(letterElement);
-            });
         }
 
         // Function to render works list
@@ -688,16 +743,8 @@
                 const artist = await fetchArtistData(artistId);
                 renderArtistProfile(artist);
 
-                // Render alphabet filter
-                renderAlphabetFilter();
-
-                // Load works for the first letter (অ) by default
-                const defaultLetter = 'অ';
-                const firstLetterElement = document.querySelector('.alphabet-letter');
-                if (firstLetterElement) {
-                    firstLetterElement.classList.add('active');
-                }
-                loadWorksByLetter(artistId, defaultLetter);
+                // Render alphabet filter with artistId
+                renderAlphabetFilter(artistId);
 
                 // Set page title
                 document.title = `${artist.name} - অসমীয়া সাহিত্য সংগ্ৰহালয়`;
