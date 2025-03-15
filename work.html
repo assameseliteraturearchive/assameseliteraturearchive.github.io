@@ -872,7 +872,7 @@
 
             switch (tabType) {
                 case 'text':
-                    filePath = `/data/${artistId}_a/workstext/w_${workId}.txt`;
+                    filePath = `/data/${artistId}_a/workstext/w_${workId}.html`;
                     contentType = 'text';
                     break;
                 case 'audio':
@@ -880,11 +880,11 @@
                     contentType = 'audio';
                     break;
                 case 'explanation':
-                    filePath = `/data/${artistId}_a/worksexplaination/e_${workId}.txt`;
+                    filePath = `/data/${artistId}_a/worksexplaination/e_${workId}.html`;
                     contentType = 'text';
                     break;
                 case 'details':
-                    filePath = `/data/${artistId}_a/worksextrainfo/i_${workId}.txt`;
+                    filePath = `/data/${artistId}_a/worksextrainfo/i_${workId}.html`;
                     contentType = 'text';
                     break;
                 default:
@@ -908,7 +908,7 @@
                         return response.text();
                     })
                     .then(textContent => {
-                        let formattedContent = textContent.replace(/\n/g, '<br>');
+                        let formattedContent = textContent;
 
                         contentContainer.innerHTML = `
                     <div class="tab-content active" id="${tabType}-content">
