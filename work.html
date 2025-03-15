@@ -651,7 +651,7 @@
                 <div class="footer-section">
                     <h3>আমাৰ সৈতে যোগাযোগ কৰক</h3>
                     <p>ইমেইল: info@assamliterature.org</p>
-                    <p>ফোন: +91-967-812-6477</p>
+                    <p>ফোন: +91-123-456-7890</p>
                 </div>
             </div>
             <div class="copyright">
@@ -827,198 +827,329 @@
         }
 
         // Function to initialize tabs with dynamic content loading
-        // Function to initialize tabs with dynamic content loading
-        function initTabsWithDynamicLoading(workData) {
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const dynamicTabContent = document.getElementById('dynamic-tab-content');
-            let audioElement = null;
+function initTabsWithDynamicLoading(workData) {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const dynamicTabContent = document.getElementById('dynamic-tab-content');
+    let loadedTabs = {}; // Track which tabs have been loaded
+    
+    // First clear any existing content in the dynamic tab content area
+    // This removes the initial "পাঠ লোড হৈ আছে..." message
+    dynamicTabContent.innerHTML = '';
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
 
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
 
-                    // Add active class to clicked button
-                    button.classList.add('active');
-
-                    // Get tab type from button ID
-                    const tabType = button.id.replace('-tab', '');
-
-                    // Load content based on tab type
-                    loadTabContent(tabType, workData.id, workData.artistId, dynamicTabContent, audioElement);
-                });
-            });
-
-            // Load initial content for the first active tab
-            const activeTab = document.querySelector('.tab-button.active');
-            if (activeTab) {
-                const initialTabType = activeTab.id.replace('-tab', '');
-                loadTabContent(initialTabType, workData.id, workData.artistId, dynamicTabContent, audioElement);
+            // Get tab type from button ID
+            const tabType = button.id.replace('-tab', '');
+            
+            // Hide all tab contents
+            const allTabContents = document.querySelectorAll('.tab-content');
+            allTabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Check if this tab content already exists
+            const existingTab = document.getElementById(`${tabType}-content`);
+            if (existingTab) {
+                // If tab content exists, just show it
+                existingTab.classList.add('active');
+            } else {
+                // Load content if it doesn't exist yet
+                loadTabContent(tabType, workData.id, workData.artistId, dynamicTabContent, loadedTabs);
             }
+        });
+    });
+
+    // Load initial content for the first active tab
+    const activeTab = document.querySelector('.tab-button.active');
+    if (activeTab) {
+        const initialTabType = activeTab.id.replace('-tab', '');
+        loadTabContent(initialTabType, workData.id, workData.artistId, dynamicTabContent, loadedTabs);
+    }
+}
+
+// Function to load tab content dynamically
+function loadTabContent(tabType, workId, artistId, contentContainer, loadedTabs) {
+    // Check if this tab is already loaded
+    if (loadedTabs[tabType]) {
+        // Just activate the tab
+        const tabContent = document.getElementById(`${tabType}-content`);
+        if (tabContent) {
+            tabContent.classList.add('active');
+            return;
         }
-
-        // Function to load tab content dynamically
-        function loadTabContent(tabType, workId, artistId, contentContainer, existingAudioElement) {
-            // Store the current audio element state if it exists
-            let audioSrc = null;
-            let audioCurrentTime = 0;
-            let audioWasPlaying = false;
-
-            // Find existing audio element if any
-            const existingAudio = document.querySelector('audio');
-            if (existingAudio) {
-                audioSrc = existingAudio.querySelector('source').src;
-                audioCurrentTime = existingAudio.currentTime;
-                audioWasPlaying = !existingAudio.paused;
-            }
-
-            // If switching to audio tab, don't reload if already present
-            if (tabType === 'audio' && audioSrc) {
-                // Show loading state for other tabs only
-                const allTabContents = contentContainer.querySelectorAll('.tab-content');
-                allTabContents.forEach(tab => tab.classList.remove('active'));
-
-                // Find or create audio tab content
-                let audioContent = contentContainer.querySelector('#audio-content');
-                if (!audioContent) {
-                    audioContent = document.createElement('div');
-                    audioContent.id = 'audio-content';
-                    audioContent.className = 'tab-content';
-                    contentContainer.appendChild(audioContent);
-                }
-
-                audioContent.classList.add('active');
-                return;
-            }
-
-            // For non-audio tabs, hide all tabs but don't remove audio element
-            const audioTab = contentContainer.querySelector('#audio-content');
-            const allOtherTabs = Array.from(contentContainer.querySelectorAll('.tab-content:not(#audio-content)'));
-
-            // Remove all non-audio tabs
-            allOtherTabs.forEach(tab => tab.remove());
-
-            // Hide audio tab if it exists
-            if (audioTab) {
-                audioTab.classList.remove('active');
-            }
-
-            // Show loading state
-            const loadingTab = document.createElement('div');
-            loadingTab.className = 'tab-content active';
-            loadingTab.id = `${tabType}-content`;
-            loadingTab.innerHTML = `
+    }
+    
+    // Create new tab content container
+    const newTabContent = document.createElement('div');
+    newTabContent.className = 'tab-content active';
+    newTabContent.id = `${tabType}-content`;
+    
+    // Show loading state
+    newTabContent.innerHTML = `
         <div class="loading">
             <p>তথ্য লোড হৈ আছে...</p>
         </div>
     `;
-            contentContainer.appendChild(loadingTab);
+    
+    // Add the new tab to the container
+    contentContainer.appendChild(newTabContent);
 
-            // Prepare the file path based on tab type and work ID
-            let filePath;
-            let contentType;
+    // Prepare the file path based on tab type and work ID
+    let filePath;
+    let contentType;
 
-            switch (tabType) {
-                case 'text':
-                    filePath = `/data/${artistId}_a/workstext/w_${workId}.html`;
-                    contentType = 'text';
-                    break;
-                case 'audio':
-                    filePath = `/data/${artistId}_a/worksaudio/a_${workId}.mp3`;
-                    contentType = 'audio';
-                    break;
-                case 'explanation':
-                    filePath = `/data/${artistId}_a/worksexplaination/e_${workId}.html`;
-                    contentType = 'text';
-                    break;
-                case 'details':
-                    filePath = `/data/${artistId}_a/worksextrainfo/i_${workId}.html`;
-                    contentType = 'text';
-                    break;
-                default:
-                    loadingTab.innerHTML = `
+    switch (tabType) {
+        case 'text':
+            filePath = `/data/${artistId}_a/workstext/w_${workId}.html`;
+            contentType = 'text';
+            break;
+        case 'audio':
+            filePath = `/data/${artistId}_a/worksaudio/a_${workId}.mp3`;
+            contentType = 'audio';
+            break;
+        case 'explanation':
+            filePath = `/data/${artistId}_a/worksexplaination/e_${workId}.html`;
+            contentType = 'text';
+            break;
+        case 'details':
+            filePath = `/data/${artistId}_a/worksextrainfo/i_${workId}.html`;
+            contentType = 'text';
+            break;
+        default:
+            newTabContent.innerHTML = `
                 <div class="error">
                     <p>অজ্ঞাত টেব প্ৰকাৰ</p>
                 </div>
             `;
-                    return;
-            }
+            loadedTabs[tabType] = true;
+            return;
+    }
 
-            // Load content based on type
-            if (contentType === 'text') {
-                fetch(filePath)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Content not found');
-                        }
-                        return response.text();
-                    })
-                    .then(textContent => {
-                        let formattedContent = textContent;
-                        loadingTab.innerHTML = `
+    // Load content based on type
+    if (contentType === 'text') {
+        fetch(filePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Content not found');
+                }
+                return response.text();
+            })
+            .then(textContent => {
+                let formattedContent = textContent;
+                // Replace loading message with actual content
+                newTabContent.innerHTML = `
                     <div class="${tabType}-content">
                         ${formattedContent}
                     </div>
                 `;
-                    })
-                    .catch(error => {
-                        console.error(`Error loading ${tabType} content:`, error);
-                        loadingTab.innerHTML = `
-                    <div class="no-content">
-                        <p>এই কৰ্মৰ বাবে ${getTabTypeName(tabType)} উপলব্ধ নহয়।</p>
-                    </div>
-                `;
-                    });
-            } else if (contentType === 'audio') {
-                // For audio tab
-                if (audioSrc && audioSrc.endsWith(filePath)) {
-                    // We already have this audio loaded, just show it and restore state
-                    loadingTab.innerHTML = `
-                <div class="audio-player">
-                    <h3>শ্ৰৱণ কৰক</h3>
-                    <audio controls>
-                        <source src="${audioSrc}" type="audio/mpeg">
-                        আপোনাৰ ব্ৰাউজাৰে অডিঅ' সমৰ্থন নকৰে।
-                    </audio>
-                </div>
-            `;
-
-                    const newAudio = loadingTab.querySelector('audio');
-                    newAudio.currentTime = audioCurrentTime;
-                    if (audioWasPlaying) {
-                        newAudio.play();
-                    }
+                loadedTabs[tabType] = true;
+            })
+            .catch(error => {
+                console.error(`Error loading ${tabType} content:`, error);
+                
+                // Different error messages for different tab types
+                let errorMessage;
+                if (tabType === 'details') {
+                    errorMessage = `এই কৰ্মৰ বাবে অধিক তথ্য উপলব্ধ নহয়।`;
+                } else if (tabType === 'text') {
+                    errorMessage = `এই কৰ্মৰ বাবে পাঠ উপলব্ধ নহয়।`;
+                } else if (tabType === 'explanation') {
+                    errorMessage = `এই কৰ্মৰ বাবে ব্যাখ্যা উপলব্ধ নহয়।`;
                 } else {
-                    // New audio needs to be loaded
-                    const audio = new Audio(filePath);
-                    audio.addEventListener('canplaythrough', () => {
-                        loadingTab.innerHTML = `
-                    <div class="audio-player">
-                        <h3>শ্ৰৱণ কৰক</h3>
-                        <audio controls>
-                            <source src="${filePath}" type="audio/mpeg">
-                            আপোনাৰ ব্ৰাউজাৰে অডিঅ' সমৰ্থন নকৰে।
-                        </audio>
+                    errorMessage = `এই কৰ্মৰ বাবে ${getTabTypeName(tabType)} উপলব্ধ নহয়।`;
+                }
+                
+                newTabContent.innerHTML = `
+                    <div class="no-content">
+                        <p>${errorMessage}</p>
                     </div>
                 `;
-                    });
-
-                    audio.addEventListener('error', () => {
-                        loadingTab.innerHTML = `
+                loadedTabs[tabType] = true;
+            });
+    } else if (contentType === 'audio') {
+        // For audio, we check if the file exists differently
+        const audio = new Audio(filePath);
+        
+        // Set a timeout to handle cases where the audio doesn't load
+        const timeoutId = setTimeout(() => {
+            // If we haven't gotten a response after 5 seconds, assume error
+            if (!loadedTabs[tabType]) {
+                newTabContent.innerHTML = `
                     <div class="no-content">
                         <p>এই কৰ্মৰ বাবে অডিঅ' উপলব্ধ নহয়।</p>
                     </div>
                 `;
-                    });
-
-                    // Start loading the audio
-                    audio.load();
-                }
+                loadedTabs[tabType] = true;
             }
+        }, 5000);
+        
+        audio.addEventListener('canplaythrough', () => {
+            clearTimeout(timeoutId);
+            newTabContent.innerHTML = `
+                <div class="audio-player">
+                    <h3>শ্ৰৱণ কৰক</h3>
+                    <audio controls>
+                        <source src="${filePath}" type="audio/mpeg">
+                        আপোনাৰ ব্ৰাউজাৰে অডিঅ' সমৰ্থন নকৰে।
+                    </audio>
+                </div>
+            `;
+            loadedTabs[tabType] = true;
+            
+            // Add event listener to ensure audio continues playing when switching tabs
+            const audioElement = newTabContent.querySelector('audio');
+            if (audioElement) {
+                audioElement.addEventListener('play', () => {
+                    // Store the audio element globally so it won't be garbage collected
+                    window.currentAudio = audioElement;
+                });
+            }
+        });
+
+        audio.addEventListener('error', () => {
+            clearTimeout(timeoutId);
+            newTabContent.innerHTML = `
+                <div class="no-content">
+                    <p>এই কৰ্মৰ বাবে অডিঅ' উপলব্ধ নহয়।</p>
+                </div>
+            `;
+            loadedTabs[tabType] = true;
+        });
+
+        // Start loading the audio
+        audio.load();
+    }
+}
+
+// Function to fetch work data based on ID - Modified to fix initial tab loading
+function fetchWorkData(wid, aid) {
+    return new Promise((resolve) => {
+        // Show loader
+        const workLoader = document.getElementById('work-loader');
+        if (workLoader) {
+            workLoader.style.display = 'block';
         }
 
-        // Function to load tab content dynamically
-       
+        // Parse ID to integer
+        const workId = parseInt(wid) || 1;
+
+        // Fetch the list of works from the JSON file
+        fetch(`/data/` + aid + `_a/works.json`)
+            .then(response => response.json())
+            .then(worksDatabase => {
+                const workData = worksDatabase[workId - 1];
+
+                if (workData) {
+                    // Update breadcrumb
+                    const artistBreadcrumb = document.getElementById('artist-breadcrumb');
+                    if (artistBreadcrumb) {
+                        artistBreadcrumb.textContent = workData.artistName;
+                        artistBreadcrumb.href = `artist.html?id=${workData.artistId}`;
+                    }
+
+                    const workBreadcrumb = document.getElementById('work-breadcrumb');
+                    if (workBreadcrumb) {
+                        workBreadcrumb.textContent = workData.title;
+                    }
+
+                    // Prepare the work container HTML
+                    let workHTML = `
+                <div class="work-hero">
+                    <div class="work-hero-image" style="background-image: url('${workData.image}')">
+                        <div class="work-hero-overlay">
+                            <h1 class="work-title">${workData.title}</h1>
+                            <div class="work-metadata">
+                                <div class="work-metadata-item">
+                                    <i>👤</i> ${workData.artistName}
+                                </div>
+                                <div class="work-metadata-item">
+                                    <i>📅</i> ${workData.year}
+                                </div>
+                                <div class="work-metadata-item">
+                                    <i>📚</i> ${workData.type}
+                                </div>
+                                <div class="work-metadata-item">
+                                    <i>🏢</i> ${workData.publishedBy}
+                                </div>
+                            </div>
+                            <div class="work-tags">
+                                ${workData.tags.map(tag => `<span class="work-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="work-details">
+                        <h2 class="section-title">পৰিচয়</h2>
+                        <div class="work-intro">
+                            ${workData.introduction}
+                        </div>
+                        
+                        <div class="content-tabs">
+                            <div class="tab-buttons">
+                                ${workData.hasText ? '<button class="tab-button active" id="text-tab">পাঠ</button>' : ''}
+                                ${workData.hasAudio ? '<button class="tab-button" id="audio-tab">শ্ৰৱণ</button>' : ''}
+                                ${workData.hasExplanation ? '<button class="tab-button" id="explanation-tab">ব্যাখ্যা</button>' : ''}
+                                <button class="tab-button" id="details-tab">অধিক তথ্য</button>
+                            </div>
+                            <div id="dynamic-tab-content">
+                                <!-- Tab content will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                    // Update the work container with the HTML
+                    const workContainer = document.getElementById('work-container');
+                    if (workContainer) {
+                        workContainer.innerHTML = workHTML;
+                    }
+
+                    // Initialize tabs with dynamic content loading
+                    initTabsWithDynamicLoading(workData);
+
+                } else {
+                    // Work not found
+                    const workContainer = document.getElementById('work-container');
+                    if (workContainer) {
+                        workContainer.innerHTML = `
+                    <div class="no-content">
+                        <h2>কৰ্ম পোৱা নগ'ল</h2>
+                        <p>আপুনি বিচৰা কৰ্মটো আমাৰ ডাটাবেইচত পোৱা নগ'ল।</p>
+                        <p><a href="index.html">মূল পৃষ্ঠালৈ উভতি যাওক</a></p>
+                    </div>
+                `;
+                    }
+                }
+
+                // Hide loader
+                if (workLoader) {
+                    workLoader.style.display = 'none';
+                }
+
+                resolve(workData);
+            })
+            .catch(error => {
+                console.error("Error loading works data:", error);
+                const workContainer = document.getElementById('work-container');
+                if (workContainer) {
+                    workContainer.innerHTML = `
+                <div class="no-content">
+                    <h2>তথ্য লোড কৰাত সমস্যা হৈছে</h2>
+                    <p>দুঃখিত, কৰ্মৰ তথ্য লোড কৰাত সমস্যা হৈছে। অনুগ্ৰহ কৰি পিছত চেষ্টা কৰক।</p>
+                    <p><a href="index.html">মূল পৃষ্ঠালৈ উভতি যাওক</a></p>
+                </div>
+            `;
+                }
+                if (workLoader) {
+                    workLoader.style.display = 'none';
+                }
+                resolve(null);
+            });
+    });
+}
         // Helper function to get tab type name in Assamese
         function getTabTypeName(tabType) {
             switch (tabType) {
