@@ -1059,7 +1059,7 @@ function fetchWorkData(wid, aid) {
                     // Prepare the work container HTML
                     let workHTML = `
                 <div class="work-hero">
-                    <div class="work-hero-image" style="background-image: url('${workData.image}')">
+                    <div class="work-hero-image" style="background-image: url('${workData.image}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
                         <div class="work-hero-overlay">
                             <h1 class="work-title">${workData.title}</h1>
                             <div class="work-metadata">
